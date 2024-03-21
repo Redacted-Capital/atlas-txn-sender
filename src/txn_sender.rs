@@ -191,7 +191,7 @@ pub struct FeeAndCu {
 pub fn compute_fee_and_cu(transaction: &VersionedTransaction) -> FeeAndCu {
     let mut cu = DEFAULT_INSTRUCTION_COMPUTE_UNIT_LIMIT;
     let mut compute_budget = ComputeBudget::default();
-    if let Err(e) = transaction.sanitize() {
+    if let Err(e) = transaction.sanitize(false) {
         return FeeAndCu { fee: None, cu };
     }
     let instructions = transaction.message.instructions().iter().map(|ix| {
@@ -210,7 +210,7 @@ pub fn compute_fee_and_cu(transaction: &VersionedTransaction) -> FeeAndCu {
             ix,
         )
     });
-    let compute_budget = compute_budget.process_instructions(instructions, true, true);
+    let compute_budget = compute_budget.process_instructions(instructions, true, true, true, false);
     match compute_budget {
         Ok(compute_budget) => {
             return FeeAndCu {
