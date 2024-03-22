@@ -8,7 +8,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use cadence_macros::statsd_time;
+// use cadence_macros::statsd_time;
 use dashmap::DashMap;
 use solana_client::rpc_client::RpcClient;
 use solana_rpc_client_api::response::RpcContactInfo;
@@ -83,7 +83,7 @@ impl LeaderTrackerImpl {
                     sleep(Duration::from_secs(1)).await;
                     continue;
                 }
-                statsd_time!("poll_slot_leaders", start.elapsed());
+                // statsd_time!("poll_slot_leaders", start.elapsed());
                 sleep(Duration::from_secs(60)).await;
             }
         });

@@ -1,7 +1,7 @@
 use std::{sync::Arc, time::Instant};
 
 use crate::rpc_server::RequestMetadata;
-use cadence_macros::{statsd_count, statsd_time};
+// use cadence_macros::{statsd_count, statsd_time};
 use dashmap::DashMap;
 use solana_sdk::transaction::VersionedTransaction;
 use tracing::error;
@@ -48,7 +48,7 @@ impl TransactionStore for TransactionStoreImpl {
         } else {
             error!("Transaction has no signatures");
         }
-        statsd_time!("add_signature_time", start.elapsed());
+        // statsd_time!("add_signature_time", start.elapsed());
     }
     fn get_signatures(&self) -> Vec<String> {
         let start = Instant::now();
@@ -57,13 +57,13 @@ impl TransactionStore for TransactionStoreImpl {
             .iter()
             .map(|t| get_signature(&t).unwrap())
             .collect();
-        statsd_time!("get_signatures_time", start.elapsed());
+        // statsd_time!("get_signatures_time", start.elapsed());
         signatures
     }
     fn remove_transaction(&self, signature: String) -> Option<TransactionData> {
         let start = Instant::now();
         let transaction = self.transactions.remove(&signature);
-        statsd_time!("remove_signature_time", start.elapsed());
+        // statsd_time!("remove_signature_time", start.elapsed());
         transaction.map_or(None, |t| Some(t.1))
     }
     fn get_transactions(&self) -> Arc<DashMap<String, TransactionData>> {

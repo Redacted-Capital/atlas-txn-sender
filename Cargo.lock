@@ -563,8 +563,6 @@ dependencies = [
  "anyhow",
  "base64 0.21.7",
  "bincode",
- "cadence",
- "cadence-macros",
  "crossbeam",
  "dashmap 5.5.3",
  "figment",
@@ -1011,24 +1009,6 @@ dependencies = [
  "cc",
  "libc",
  "pkg-config",
-]
-
-[[package]]
-name = "cadence"
-version = "0.29.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f39286bc075b023101dccdb79456a1334221c768b8faede0c2aff7ed29a9482d"
-dependencies = [
- "crossbeam-channel",
-]
-
-[[package]]
-name = "cadence-macros"
-version = "0.29.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a9f07a3c8a329df611200b46f7969235cf6377ad01d5b3d6e92555d4fc70781"
-dependencies = [
- "cadence",
 ]
 
 [[package]]

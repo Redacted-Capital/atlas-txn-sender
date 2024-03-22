@@ -2,7 +2,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 use std::{collections::HashMap, sync::Arc, time::Duration};
 
-use cadence_macros::statsd_count;
+// use cadence_macros::statsd_count;
 use dashmap::DashMap;
 use futures::sink::SinkExt;
 use futures::StreamExt;
@@ -72,7 +72,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         .await;
                     if let Err(e) = subscription {
                         error!("Error subscribing to gRPC stream, waiting one second then retrying connect: {}", e);
-                        statsd_count!("grpc_subscribe_error", 1);
+                        // statsd_count!("grpc_subscribe_error", 1);
                         sleep(Duration::from_secs(1)).await;
                         continue;
                     }
@@ -95,7 +95,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                                 let ping = grpc_tx.send(ping()).await;
                                 if let Err(e) = ping {
                                     error!("Error sending ping: {}", e);
-                                    statsd_count!("grpc_ping_error", 1);
+                                    // statsd_count!("grpc_ping_error", 1);
                                     break;
                                 }
                             }
@@ -127,7 +127,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                     let subscription = grpc_client.subscribe().await;
                     if let Err(e) = subscription {
                         error!("Error subscribing to gRPC stream, waiting one second then retrying connect: {}", e);
-                        statsd_count!("grpc_subscribe_error", 1);
+                        // statsd_count!("grpc_subscribe_error", 1);
                         sleep(Duration::from_secs(1)).await;
                         continue;
                     }
@@ -147,7 +147,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                                     let ping = grpc_tx.send(ping()).await;
                                     if let Err(e) = ping {
                                         error!("Error sending ping: {}", e);
-                                        statsd_count!("grpc_ping_error", 1);
+                                        // statsd_count!("grpc_ping_error", 1);
                                         break;
                                     }
                                 }

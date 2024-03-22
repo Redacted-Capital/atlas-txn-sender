@@ -5,7 +5,7 @@ use std::{
     time::{Duration, Instant, SystemTime},
 };
 
-use cadence_macros::{statsd_count, statsd_time};
+// use cadence_macros::{statsd_count, statsd_time};
 use jsonrpsee::{
     core::{async_trait, RpcResult},
     proc_macros::rpc,
@@ -73,7 +73,7 @@ impl AtlasTxnSenderServer for AtlasTxnSenderImpl {
             .clone()
             .map(|m| m.api_key)
             .unwrap_or("none".to_string());
-        statsd_count!("send_transaction", 1, "api_key" => &api_key);
+        // statsd_count!("send_transaction", 1, "api_key" => &api_key);
         validate_send_transaction_params(&params)?;
         let start = Instant::now();
         let encoding = params.encoding.unwrap_or(UiTransactionEncoding::Base58);
@@ -104,11 +104,11 @@ impl AtlasTxnSenderServer for AtlasTxnSenderImpl {
             request_metadata,
         };
         self.txn_sender.send_transaction(transaction);
-        statsd_time!(
-            "send_transaction_time",
-            start.elapsed(),
-            "api_key" => &api_key
-        );
+        // statsd_time!(
+        //     "send_transaction_time",
+        //     start.elapsed(),
+        //     "api_key" => &api_key
+        // );
         Ok(signature)
     }
 }

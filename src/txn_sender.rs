@@ -1,4 +1,4 @@
-use cadence_macros::{statsd_count, statsd_gauge, statsd_time};
+// use cadence_macros::{statsd_count, statsd_gauge, statsd_time};
 use solana_client::{
     connection_cache::ConnectionCache, nonblocking::tpu_connection::TpuConnection,
 };
@@ -109,7 +109,7 @@ impl TxnSenderImpl {
                                         leader, e
                                     );
                                 }
-                                statsd_count!("transaction_send_error", 1);
+                                // statsd_count!("transaction_send_error", 1);
                             } else {
                                 return;
                             }
@@ -118,7 +118,7 @@ impl TxnSenderImpl {
                 }
                 // remove transactions that reached max retries
                 for signature in transactions_reached_max_retries {
-                    statsd_count!("transactions_reached_max_retries", 1);
+                    // statsd_count!("transactions_reached_max_retries", 1);
                     let transaction_data = transaction_store.remove_transaction(signature);
                     if let Some(transaction_data) = transaction_data {
                         let fee_and_cu =
@@ -129,11 +129,11 @@ impl TxnSenderImpl {
                             .request_metadata
                             .map(|m| m.api_key)
                             .unwrap_or("none".to_string());
-                        statsd_count!("transactions_not_landed", 1, "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
-                        statsd_gauge!(
-                            "transaction_retry_queue_length",
-                            transaction_retry_queue_length as u64
-                        );
+                        // statsd_count!("transactions_not_landed", 1, "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
+                        // statsd_gauge!(
+                        //     "transaction_retry_queue_length",
+                        //     transaction_retry_queue_length as u64
+                        // );
                     }
                 }
                 sleep(Duration::from_secs(txn_send_retry_interval_seconds as u64)).await;
@@ -164,21 +164,21 @@ impl TxnSenderImpl {
         self.txn_sender_runtime.spawn(async move {
             let confirmed_at = solana_rpc.confirm_transaction(signature.clone()).await;
             transaction_store.remove_transaction(signature);
-            if let Some(confirmed_at) = confirmed_at {
-                statsd_count!("transactions_landed", 1, "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
-                statsd_time!("transaction_land_time", sent_at.elapsed(), "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
-                // This code doesn't behave as expected, it returns very low times and sometimes negative times, maybe the txns land extremely fast, but it seems fishy.
-                // match unix_to_time(confirmed_at).duration_since(sent_at_unix) {
-                //     Ok(land_time) => {
-                //         statsd_time!("transaction_land_time", land_time.as_secs() as u64);
-                //     }
-                //     Err(e) => {
-                //         error!("Error computing land time: {}", e);
-                //     }
-                // }
-            } else {
-                statsd_count!("transactions_not_landed", 1, "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
-            }
+            // if let Some(confirmed_at) = confirmed_at {
+            //     // statsd_count!("transactions_landed", 1, "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
+            //     // statsd_time!("transaction_land_time", sent_at.elapsed(), "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
+            //     // This code doesn't behave as expected, it returns very low times and sometimes negative times, maybe the txns land extremely fast, but it seems fishy.
+            //     // match unix_to_time(confirmed_at).duration_since(sent_at_unix) {
+            //     //     Ok(land_time) => {
+            //     //         statsd_time!("transaction_land_time", land_time.as_secs() as u64);
+            //     //     }
+            //     //     Err(e) => {
+            //     //         error!("Error computing land time: {}", e);
+            //     //     }
+            //     // }
+            // } else {
+            //     statsd_count!("transactions_not_landed", 1, "priority_fees" => &priority_fees, "compute_units" => &cu, "api_key" => &api_key);
+            // }
         });
     }
 }
@@ -257,9 +257,9 @@ impl TxnSender for TxnSenderImpl {
                         }
                     } else {
                         let leader_num_str = &leader_num.to_string();
-                        statsd_time!(
-                            "transaction_received_by_leader",
-                            transaction_data.sent_at.elapsed(), "api_key" => &api_key, "leader_num" => &leader_num_str);
+                        // statsd_time!(
+                        //     "transaction_received_by_leader",
+                        //     transaction_data.sent_at.elapsed(), "api_key" => &api_key, "leader_num" => &leader_num_str);
                         return;
                     }
                 }

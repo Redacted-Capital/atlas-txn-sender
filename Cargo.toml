@@ -28,8 +28,6 @@ solana-transaction-status = { git = "https://github.com/jito-foundation/jito-sol
 solana-sdk = { git = "https://github.com/jito-foundation/jito-solana.git", tag = "v1.16.21-jito" }
 solana-program-runtime = { git = "https://github.com/jito-foundation/jito-solana.git", tag = "v1.16.21-jito" }
 solana-rpc-client-api = { git = "https://github.com/jito-foundation/jito-solana.git", tag = "v1.16.21-jito" }
-cadence = "0.29.0"
-cadence-macros = "0.29.0"
 tower = { version = "0.4.13", features = ["full"] }
 anyhow = "1.0.80"
 tower-http = { version = "0.4.4", features = ["auth"] }
