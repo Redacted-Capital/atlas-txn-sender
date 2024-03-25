@@ -43,6 +43,7 @@ pub trait AtlasTxnSender {
     ) -> RpcResult<String>;
 }
 
+#[derive(Clone)]
 pub struct AtlasTxnSenderImpl {
     txn_sender: Arc<dyn TxnSender>,
     max_txn_send_retries: usize,
