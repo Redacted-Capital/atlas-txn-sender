@@ -82,6 +82,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                     match message {
                         Ok(message) => match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
+                                info!("GOT BLOCK MESSAGE");
                                 let block_time = block.block_time.unwrap().timestamp;
                                 for transaction in block.transactions {
                                     let signature =
@@ -206,12 +207,12 @@ fn get_block_subscribe_request() -> SubscribeRequest {
             SubscribeRequestFilterBlocks {
                 account_include: vec![],
                 include_transactions: Some(true),
-                include_accounts: None,
-                include_entries: None,
+                include_accounts: Some(false),
+                include_entries: Some(false),
             },
         )]),
         commitment: Some(CommitmentLevel::Confirmed.into()),
-        ..SubscribeRequest::default()
+        ..Default::default()
     }
 }
 
