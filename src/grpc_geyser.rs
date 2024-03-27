@@ -65,7 +65,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
             loop {
                 let mut grpc_tx;
                 let mut grpc_rx;
-                
+                {
                     let mut grpc_client = grpc_client.write().await;
                     let subscription = grpc_client
                         .subscribe_with_request(Some(get_block_subscribe_request()))
@@ -77,14 +77,11 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         continue;
                     }
                     (grpc_tx, grpc_rx) = subscription.unwrap();
-                
+                }
                 while let Some(message) = grpc_rx.next().await {
                     match message {
-                        Ok(message) => {
-                            println!("GOT BLOCK ATLEAST!");
-                            match message.update_oneof {
+                        Ok(message) => match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
-                                info!("GOT BLOCK MESSAGE");
                                 let block_time = block.block_time.unwrap().timestamp;
                                 for transaction in block.transactions {
                                     let signature =
@@ -106,8 +103,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                             _ => {
                                 error!("Unknown message: {:?}", message);
                             }
-                        }
-                    },
+                        },
                         Err(error) => {
                             error!("error in txn subscribe, resubscribing in 1 second: {error:?}");
                             sleep(Duration::from_secs(1)).await;
@@ -139,12 +135,9 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 }
                 grpc_tx.send(get_slot_subscribe_request()).await.unwrap();
                 while let Some(message) = grpc_rx.next().await {
-                    {
-                        println!("GOT MESSAGE ATLEAST!");
-                        match message {
+                    match message {
                         Ok(msg) => {
                             match msg.update_oneof {
-                                
                                 Some(UpdateOneof::Slot(slot)) => {
                                     cur_slot.store(slot.slot, Ordering::Relaxed);
                                 }
@@ -170,7 +163,6 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         }
                     }
                 }
-            }
                 sleep(Duration::from_secs(1)).await;
             }
         });
