@@ -79,6 +79,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                     (grpc_tx, grpc_rx) = subscription.unwrap();
                 }
                 while let Some(message) = grpc_rx.next().await {
+                    print!("INSIDE THE LOOP");
                     match message {
                         Ok(message) => {
                             info!("GOT MESSAGE ATLEAST!");
