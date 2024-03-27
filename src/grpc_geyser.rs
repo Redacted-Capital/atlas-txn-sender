@@ -81,7 +81,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 while let Some(message) = grpc_rx.next().await {
                     match message {
                         Ok(message) => {
-                            println!("GOT MESSAGE ATLEAST!");
+                            println!("GOT BLOCK ATLEAST!");
                             match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
                                 info!("GOT BLOCK MESSAGE");
