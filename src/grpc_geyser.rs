@@ -206,8 +206,8 @@ fn get_block_subscribe_request() -> SubscribeRequest {
             SubscribeRequestFilterBlocks {
                 account_include: vec![],
                 include_transactions: Some(true),
-                include_accounts: Some(false),
-                include_entries: Some(false),
+                include_accounts: None,
+                include_entries: None,
             },
         )]),
         commitment: Some(CommitmentLevel::Confirmed.into()),

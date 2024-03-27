@@ -41,6 +41,7 @@ yellowstone-grpc-client = { git = "https://github.com/rpcpool/yellowstone-grpc-g
 futures-channel = "0.3.30"
 futures-sink = "0.3.30"
 rand = "0.8.5"
+quinn = "0.9.3"
 
 [patch.crates-io]
 solana-program = { git = "https://github.com/jito-foundation/jito-solana.git", tag = "v1.16.21-jito" }
