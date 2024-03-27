@@ -139,9 +139,12 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 }
                 grpc_tx.send(get_slot_subscribe_request()).await.unwrap();
                 while let Some(message) = grpc_rx.next().await {
-                    match message {
+                    {
+                        println!("GOT MESSAGE ATLEAST!");
+                        match message {
                         Ok(msg) => {
                             match msg.update_oneof {
+                                
                                 Some(UpdateOneof::Slot(slot)) => {
                                     cur_slot.store(slot.slot, Ordering::Relaxed);
                                 }
@@ -167,6 +170,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         }
                     }
                 }
+            }
                 sleep(Duration::from_secs(1)).await;
             }
         });
