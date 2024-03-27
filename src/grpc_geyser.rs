@@ -65,7 +65,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
             loop {
                 let mut grpc_tx;
                 let mut grpc_rx;
-                {
+                
                     let mut grpc_client = grpc_client.write().await;
                     let subscription = grpc_client
                         .subscribe_with_request(Some(get_block_subscribe_request()))
@@ -77,7 +77,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         continue;
                     }
                     (grpc_tx, grpc_rx) = subscription.unwrap();
-                }
+                
                 while let Some(message) = grpc_rx.next().await {
                     match message {
                         Ok(message) => {
