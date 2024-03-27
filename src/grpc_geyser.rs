@@ -211,7 +211,7 @@ fn get_block_subscribe_request() -> SubscribeRequest {
             },
         )]),
         commitment: Some(CommitmentLevel::Confirmed.into()),
-        ..Default::default()
+        ..SubscribeRequest::default()
     }
 }
 
