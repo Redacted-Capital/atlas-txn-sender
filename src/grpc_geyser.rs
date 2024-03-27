@@ -80,7 +80,9 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 }
                 while let Some(message) = grpc_rx.next().await {
                     match message {
-                        Ok(message) => match message.update_oneof {
+                        Ok(message) => {
+                            info!("GOT MESSAGE ATLEAST!");
+                            match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
                                 info!("GOT BLOCK MESSAGE");
                                 let block_time = block.block_time.unwrap().timestamp;
@@ -104,7 +106,8 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                             _ => {
                                 error!("Unknown message: {:?}", message);
                             }
-                        },
+                        }
+                    },
                         Err(error) => {
                             error!("error in txn subscribe, resubscribing in 1 second: {error:?}");
                             sleep(Duration::from_secs(1)).await;
