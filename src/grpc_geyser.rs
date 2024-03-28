@@ -42,7 +42,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         // polling with processed commitment to get latest leaders
         grpc_geyser.poll_slots().await;
         // polling with confirmed commitment to get confirmed transactions
-        grpc_geyser.poll_blocks();
+        grpc_geyser.poll_blocks().await;
         grpc_geyser.clean_signature_cache();
         grpc_geyser
     }
