@@ -72,12 +72,12 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                     (grpc_tx, grpc_rx) = subscription;
                 }
         tokio::spawn(async move {
-                
                 grpc_tx.send(get_block_subscribe_request()).await.expect("Error sending block subscribe request");
                 while let Some(message) = grpc_rx.next().await {
                     match message {
                         Ok(message) => match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
+                                println!("GOT BLOCK");
                                 let block_time = block.block_time.unwrap().timestamp;
                                 for transaction in block.transactions {
                                     let signature =
@@ -126,6 +126,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         Ok(msg) => {
                             match msg.update_oneof {
                                 Some(UpdateOneof::Slot(slot)) => {
+                                    println!("GOT SLOT");
                                     cur_slot.store(slot.slot, Ordering::Relaxed);
                                 }
                                 Some(UpdateOneof::Ping(_)) => {
