@@ -68,7 +68,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 {
                     let mut grpc_client = grpc_client.write().await;
                     let subscription = grpc_client
-                        .subscribe_with_request(Some(get_block_subscribe_request()))
+                        .subscribe()
                         .await;
                     if let Err(e) = subscription {
                         error!("Error subscribing to gRPC stream, waiting one second then retrying connect: {}", e);
@@ -79,7 +79,6 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                     (grpc_tx, grpc_rx) = subscription.unwrap();
                 }
                 grpc_tx.send(get_block_subscribe_request()).await.unwrap();
-                
                 while let Some(message) = grpc_rx.next().await {
                     match message {
                         Ok(message) => match message.update_oneof {
