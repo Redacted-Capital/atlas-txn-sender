@@ -80,6 +80,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 }
                 grpc_tx.send(get_block_subscribe_request()).await.unwrap();
                 while let Some(message) = grpc_rx.next().await {
+                    println!("WE'RE GETTING A MESSAGE");
                     match message {
                         Ok(message) => match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
