@@ -33,7 +33,7 @@ pub struct GrpcGeyserImpl<T> {
 }
 
 impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
-    pub async fn new(grpc_client: Arc<RwLock<GeyserGrpcClient<T>>>) -> Self {
+    pub fn new(grpc_client: Arc<RwLock<GeyserGrpcClient<T>>>) -> Self {
         let grpc_geyser = Self {
             grpc_client,
             cur_slot: Arc::new(AtomicU64::new(0)),
@@ -42,7 +42,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         // polling with processed commitment to get latest leaders
         grpc_geyser.poll_slots();
         // polling with confirmed commitment to get confirmed transactions
-        grpc_geyser.poll_blocks().await;
+        grpc_geyser.poll_blocks();
         grpc_geyser.clean_signature_cache();
         grpc_geyser
     }
@@ -58,7 +58,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         });
     }
 
-    async fn poll_blocks(&self) {
+    fn poll_blocks(&self) {
         let grpc_client = self.grpc_client.clone();
         let signature_cache = self.signature_cache.clone();
         tokio::spawn(async move {
