@@ -78,6 +78,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                     match message {
                         Ok(message) => match message.update_oneof {
                             Some(UpdateOneof::Block(block)) => {
+                                println!("GOT BLOCK!");
                                 let block_time = block.block_time.unwrap().timestamp;
                                 for transaction in block.transactions {
                                     let signature =
