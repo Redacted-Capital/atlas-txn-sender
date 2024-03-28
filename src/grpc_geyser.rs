@@ -33,7 +33,7 @@ pub struct GrpcGeyserImpl<T> {
 }
 
 impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
-    pub fn new(grpc_client: Arc<RwLock<GeyserGrpcClient<T>>>) -> Self {
+    pub async fn new(grpc_client: Arc<RwLock<GeyserGrpcClient<T>>>) -> Self {
         let grpc_geyser = Self {
             grpc_client,
             cur_slot: Arc::new(AtomicU64::new(0)),
@@ -42,7 +42,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         // polling with processed commitment to get latest leaders
         grpc_geyser.poll_slots();
         // polling with confirmed commitment to get confirmed transactions
-        grpc_geyser.poll_blocks();
+        grpc_geyser.poll_blocks().await;
         grpc_geyser.clean_signature_cache();
         grpc_geyser
     }
@@ -58,25 +58,18 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         });
     }
 
-    fn poll_blocks(&self) {
+    async fn poll_blocks(&self) {
         let grpc_client = self.grpc_client.clone();
         let signature_cache = self.signature_cache.clone();
         tokio::spawn(async move {
-            loop {
                 let mut grpc_tx;
                 let mut grpc_rx;
                 {
                     let mut grpc_client = grpc_client.write().await;
                     let subscription = grpc_client
                         .subscribe()
-                        .await;
-                    if let Err(e) = subscription {
-                        error!("Error subscribing to gRPC stream, waiting one second then retrying connect: {}", e);
-                        // statsd_count!("grpc_subscribe_error", 1);
-                        sleep(Duration::from_secs(1)).await;
-                        continue;
-                    }
-                    (grpc_tx, grpc_rx) = subscription.unwrap();
+                        .await.expect("error subscribing to gRPC stream");
+                    (grpc_tx, grpc_rx) = subscription;
                 }
                 grpc_tx.send(get_block_subscribe_request()).await.unwrap();
                 while let Some(message) = grpc_rx.next().await {
@@ -111,7 +104,6 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         }
                     }
                 }
-            }
         });
     }
 
