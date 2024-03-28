@@ -104,6 +104,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                             Some(UpdateOneof::Pong(_)) => {}
                             _ => {
                                 error!("Unknown message: {:?}", message);
+                                println!("Unknown message: {:?}", message);
                             }
                         },
                         Err(error) => {
