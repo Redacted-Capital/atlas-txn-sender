@@ -62,7 +62,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         let grpc_client = self.grpc_client.clone();
         let signature_cache = self.signature_cache.clone();
         tokio::spawn(async move {
-            loop {
+       
                 let mut grpc_tx;
                 let mut grpc_rx;
                 {
@@ -106,7 +106,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                         }
                     }
                 }
-            }
+        
         });
     }
 
