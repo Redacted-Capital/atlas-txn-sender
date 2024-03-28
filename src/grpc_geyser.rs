@@ -62,18 +62,16 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         let grpc_client = self.grpc_client.clone();
         let signature_cache = self.signature_cache.clone();
         tokio::spawn(async move {
-       
                 let mut grpc_tx;
                 let mut grpc_rx;
-                {
+                
                     let mut grpc_client = grpc_client.write().await;
                     let subscription = grpc_client
-                        .subscribe()
+                        .subscribe_with_request(Some(get_block_subscribe_request()))
                         .await.expect( "Error subscribing to gRPC stream, waiting one second then retrying connect");
                    
                     (grpc_tx, grpc_rx) = subscription;
-                }
-                grpc_tx.send(get_block_subscribe_request()).await.unwrap();
+                
                 while let Some(message) = grpc_rx.next().await {
                     match message {
                         Ok(message) => match message.update_oneof {
