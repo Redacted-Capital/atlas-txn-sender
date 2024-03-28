@@ -257,7 +257,7 @@ impl TxnSender for TxnSenderImpl {
                         }
                     } else {
                         let leader_num_str = &leader_num.to_string();
-                        info!(
+                        println!(
                             "Transaction sent to leader {:?}",
                             leader
                         );
