@@ -40,7 +40,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
             signature_cache: Arc::new(DashMap::new()),
         };
         // polling with processed commitment to get latest leaders
-        // grpc_geyser.poll_slots().await;
+        grpc_geyser.poll_slots().await;
         // polling with confirmed commitment to get confirmed transactions
         grpc_geyser.poll_blocks().await;
         grpc_geyser.clean_signature_cache();
