@@ -257,6 +257,10 @@ impl TxnSender for TxnSenderImpl {
                         }
                     } else {
                         let leader_num_str = &leader_num.to_string();
+                        info!(
+                            "Transaction sent to leader {:?}",
+                            leader
+                        );
                         // statsd_time!(
                         //     "transaction_received_by_leader",
                         //     transaction_data.sent_at.elapsed(), "api_key" => &api_key, "leader_num" => &leader_num_str);
