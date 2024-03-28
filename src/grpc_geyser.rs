@@ -58,7 +58,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         });
     }
 
-    async fn poll_blocks(&self) {
+    fn poll_blocks(&self) {
         let grpc_client = self.grpc_client.clone();
         let signature_cache = self.signature_cache.clone();
      
@@ -67,9 +67,11 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
                 let mut grpc_rx;
                 {
                     let mut grpc_client = grpc_client.write().await;
+
                     let subscription = grpc_client
                         .subscribe_with_request(Some(get_block_subscribe_request()))
                         .await.expect("send subscribe req failed");
+
                     (grpc_tx, grpc_rx) = subscription;
                 }
                 while let Some(message) = grpc_rx.next().await {
