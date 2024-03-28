@@ -58,7 +58,7 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         });
     }
 
-    fn poll_blocks(&self) {
+    async fn poll_blocks(&self) {
         let grpc_client = self.grpc_client.clone();
         let signature_cache = self.signature_cache.clone();
         tokio::spawn(async move {
