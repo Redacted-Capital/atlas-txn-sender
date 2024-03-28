@@ -109,17 +109,18 @@ impl<T: Interceptor + Send + Sync + 'static> GrpcGeyserImpl<T> {
         });
     }
 
-   async fn poll_slots(&self) {
+   fn poll_slots(&self) {
         let grpc_client = self.grpc_client.clone();
         let cur_slot = self.cur_slot.clone();
-        // let grpc_tx = self.grpc_tx.clone();
-        let mut grpc_client = grpc_client.write().await;
-        let mut grpc_tx;
-        let mut grpc_rx;
-        let subscription = grpc_client.subscribe().await.expect("Error subscribing to gRPC stream, waiting one second then retrying connect");
-            (grpc_tx, grpc_rx) = subscription;          
+        // let grpc_tx = self..grpc_txclone();
+        
         tokio::spawn(async move {
             loop {
+                let mut grpc_client = grpc_client.write().await;
+                let mut grpc_tx;
+                let mut grpc_rx;
+                let subscription = grpc_client.subscribe().await.expect("Error subscribing to gRPC stream, waiting one second then retrying connect");
+                (grpc_tx, grpc_rx) = subscription;          
                 grpc_tx.send(get_slot_subscribe_request()).await.unwrap();
                 while let Some(message) = grpc_rx.next().await {
                     match message {
